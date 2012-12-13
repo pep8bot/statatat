@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+
 from pyramid.view import view_config
 from pyramid.security import authenticated_userid
 from pyramid.httpexceptions import HTTPFound
@@ -57,7 +58,9 @@ def repo_toggle_enabled(request):
     data = {'access_token': request.session['token'],
             'hub.mode': ['unsubscribe', 'subscribe'][repo.enabled],
             'hub.callback': 'http://statatat.ws/webhooks/github'}  # TODO -- use our own callback and not requestb.in
+
                                                                    # ... think over the best pattern for traversal first.
+
     for event in github_events:
         data['hub.topic'] = 'https://github.com/%s/%s/events/%s' \
             % (repo.user.username, repo.name, event)

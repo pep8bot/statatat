@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+
 from tw2.jqplugins.gritter import gritter_resources
 from tw2.d3 import TimeSeriesChart
 from moksha.wsgi.widgets.api.live import LiveWidget
