@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 """ Contains code for producing embeddable widgets """
 
 from pyramid.threadlocal import get_current_request
@@ -16,18 +19,19 @@ def intify(value):
 
 
 # Embedding the widget in an iframe is easy
-@view_config(context="tw2.core.widgets.WidgetMeta",
-             name='iframe',
+
+@view_config(context='tw2.core.widgets.WidgetMeta', name='iframe',
              renderer='iframe.mak')
-@view_config(context="tw2.core.widgets.WidgetMeta",
+@view_config(context='tw2.core.widgets.WidgetMeta',
              renderer='widget.mak')
 def widget_view(request):
     return dict(widget=request.context)
 
-
 # Embedding the widget as a self-extracting script is a
 # little more difficult :D
-js_helpers = """
+
+js_helpers = \
+    """
 function include_js(url, success) {
     var script     = document.createElement('script');
     script.src = url;
@@ -60,10 +64,11 @@ function run_with_jquery(callback) {
     }
 }"""
 
-css_helper = """$('head').append('<link rel="stylesheet" href="%s" type="text/css"/>');"""
+css_helper = \
+    """$('head').append('<link rel="stylesheet" href="%s" type="text/css"/>');"""
 
-@view_config(context="tw2.core.widgets.WidgetMeta",
-             name='embed.js',
+
+@view_config(context='tw2.core.widgets.WidgetMeta', name='embed.js',
              renderer='string')
 def widget_view_javascript(request):
     """ This code is super ugly.
@@ -87,25 +92,29 @@ def widget_view_javascript(request):
         'height': 75,
         'n': 100,
         'duration': 750,
-    }
+        }
 
     params = defaults
-    params.update(dict([(k, intify(v)) for k, v in request.params.items()]))
+    params.update(dict([(k, intify(v)) for (k, v) in
+                  request.params.items()]))
 
     # Get http://statatat.ws/ and strip the trailing slash.
+
     prefix = get_current_request().resource_url(None)[:-1]
 
     raw_widget = request.context(**params).display()
     socket = get_moksha_socket(request.registry.settings).display()
     socket = '\n'.join(socket.strip().split('\n')[1:-1])
     resources = tw2.core.core.request_local().pop('resources', [])
-    scripts, calls, css = [], [socket], []
+    (scripts, calls, css) = ([], [socket], [])
     for r in resources:
         if getattr(r, 'link', None):
             if r.link.endswith('jquery.js'):
+
                 # We include jquer by other means (since we don't want to stomp
                 # on the embedding users' jquery if they have it).  We're not so
                 # careful about other resources like d3.
+
                 continue
 
             if r.link.endswith('.css'):
@@ -121,15 +130,18 @@ def widget_view_javascript(request):
     # the code run at that time.  This allows us to inject our graph in-place;
     # i.e., wherever the user includes our tag, that's where the graph will
     # unpack itself.
-    calls.insert(0, "$('script:last').before('%s');" % raw_widget.strip())
+
+    calls.insert(0, "$('script:last').before('%s');"
+                 % raw_widget.strip())
 
     # Just for debugging...
-    #calls.append("console.log('waaaaaat!');")
-    inner_payload = ";\n".join(calls)
+    # calls.append("console.log('waaaaaat!');")
+
+    inner_payload = ';\n'.join(calls)
 
     envelope = inner_payload
     for script in reversed(scripts):
-        envelope = """$.getScript("%s", function(){%s});""" % (
-            prefix + script, envelope)
+        envelope = """$.getScript("%s", function(){%s});""" % (prefix
+                + script, envelope)
 
-    return js_helpers + "\nrun_with_jquery(function() {%s});" % envelope
+    return js_helpers + '\nrun_with_jquery(function() {%s});' % envelope

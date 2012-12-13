@@ -1,8 +1,5 @@
-from .users import (
-    UserProfile,
-)
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+from users import UserProfile
 
-from .new import (
-    NewWidgetWidget,
-)
-
+from new import NewWidgetWidget

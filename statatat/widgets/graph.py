@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 from tw2.jqplugins.gritter import gritter_resources
 from tw2.d3 import TimeSeriesChart
 from moksha.wsgi.widgets.api.live import LiveWidget
@@ -6,42 +8,54 @@ global_width = 960
 
 
 class MessagesTimeSeries(TimeSeriesChart, LiveWidget):
+
     id = 'messages-time-series'
-    topic = "*"
+    topic = '*'
     onmessage = "tw2.store['${id}'].value++;"
 
     width = global_width
     height = 75
 
     # Keep this many data points
+
     n = 100
+
     # Initialize to n zeros
+
     data = [0] * n
 
+
 class FloatingPointMessagesTimeSeries(TimeSeriesChart, LiveWidget):
+
     id = 'floating-point-messages-time-series'
-    topic = "*"
+    topic = '*'
     onmessage = "tw2.store['${id}'].value += json['value'];"
 
     width = global_width
     height = 75
 
     # Keep this many data points
+
     n = 100
+
     # Initialize to n zeros
+
     data = [0] * n
 
 
 def make_chart(backend):
     return MessagesTimeSeries(backend=backend)
 
+
 def make_sysinfo_chart(backend):
     return FloatingPointMessagesTimeSeries(backend=backend)
 
 
 class PopupNotification(LiveWidget):
-    topic = "login"
-    onmessage = """
+
+    topic = 'login'
+    onmessage = \
+        """
     (function(json){
         var title = "Login";
         var body = json.username + " just logged in.";
@@ -50,8 +64,9 @@ class PopupNotification(LiveWidget):
     })(json);
     """
     resources = LiveWidget.resources + gritter_resources
-    backend = "websocket"
+    backend = 'websocket'
 
     # Don't actually produce anything when you call .display() on this widget.
-    inline_engine_name = "mako"
-    template = ""
+
+    inline_engine_name = 'mako'
+    template = ''

@@ -1,13 +1,15 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 import datetime
 import time
 
-from sqlalchemy.orm import (
-    class_mapper,
-)
+from sqlalchemy.orm import class_mapper
+
 from sqlalchemy.orm.properties import RelationshipProperty
 
 
 class JSONifiable(object):
+
     """ A mixin for sqlalchemy models providing a .__json__ method. """
 
     def __json__(self, seen=None):
@@ -20,12 +22,10 @@ class JSONifiable(object):
             seen = []
 
         properties = list(class_mapper(type(self)).iterate_properties)
-        relationships = [
-            p.key for p in properties if type(p) is RelationshipProperty
-        ]
-        attrs = [
-            p.key for p in properties if p.key not in relationships
-        ]
+        relationships = [p.key for p in properties if type(p)
+                         is RelationshipProperty]
+        attrs = [p.key for p in properties if p.key
+                 not in relationships]
 
         d = dict([(attr, getattr(self, attr)) for attr in attrs])
 
@@ -36,7 +36,8 @@ class JSONifiable(object):
             d['avatar'] = self.avatar
 
         # Serialize datetime objects
-        for k, v in d.items():
+
+        for (k, v) in d.items():
             if isinstance(v, datetime.datetime):
                 d[k] = time.mktime(v.timetuple())
 

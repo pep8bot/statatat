@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 from pyramid.threadlocal import get_current_request
 from pyramid.events import subscriber
 from pyramid.events import BeforeRender
@@ -13,12 +15,12 @@ import tw2.core
 
 from statatat.widgets.graph import PopupNotification
 
+
 # TODO -- move this into tw2.bootstrap like tw2.jqplugins.ui
-#bootstrap_css = tw2.core.CSSLink(
+# bootstrap_css = tw2.core.CSSLink(
 #    filename="static/bootswatch/united/bootstrap.min.css",
 #    modname=__name__,
-#)
-
+# )
 
 @subscriber(BeforeRender)
 def inject_globals(event):
@@ -26,20 +28,23 @@ def inject_globals(event):
 
     # TODO -- fix this.
     # This is a terrible way of doing things.
-    request.on_profile = request.user and request.url.endswith(request.user.username)
+
+    request.on_profile = request.user \
+        and request.url.endswith(request.user.username)
     request.on_stats = request.url.endswith('/stats')
     request.on_docs = request.url.endswith('/docs')
 
     # Expose these as global attrs for our templates
-    event['moksha_socket'] = get_moksha_socket(request.registry.settings)
+
+    event['moksha_socket'] = \
+        get_moksha_socket(request.registry.settings)
     event['identity'] = authenticated_userid(request)
 
     PopupNotification.display()
 
     # Register bootstrap for injection with the tw2 middleware
+
     bootstrap_css.inject()
     bootstrap_responsive_css.inject()
     bootstrap_js.inject()
-    when_ready(
-        "$('.dropdown-toggle').dropdown();"
-    )
+    when_ready("$('.dropdown-toggle').dropdown();")

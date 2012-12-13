@@ -1,5 +1,8 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 from pyramid.view import view_config
-from pyramid.httpexceptions import HTTPFound, HTTPForbidden, HTTPBadRequest
+from pyramid.httpexceptions import HTTPFound, HTTPForbidden, \
+    HTTPBadRequest
 
 import statatat.models as m
 import statatat.hub
@@ -7,8 +10,8 @@ import statatat.hub
 from hashlib import md5
 
 
-@view_config(name='source_key', request_method="POST",
-             renderer='string', context="statatat.traversal.WebHookApp")
+@view_config(name='source_key', request_method='POST', renderer='string'
+             , context='statatat.traversal.WebHookApp')
 def source_key(request):
     """ Handle source_key driven webhook.
 
@@ -20,10 +23,10 @@ def source_key(request):
     """
 
     if not 'username' in request.params:
-        return HTTPBadRequest("no username")
+        return HTTPBadRequest('no username')
 
     if not 'source_key' in request.params:
-        return HTTPBadRequest("no source_key")
+        return HTTPBadRequest('no source_key')
 
     username = request.params['username']
     source_key = request.params['source_key']
@@ -38,4 +41,4 @@ def source_key(request):
     topic = request.params['source_key']
     message = request.params.get('message', dict(value=1))
     hub.send_message(topic=topic, message=message)
-    return "OK"
+    return 'OK'
