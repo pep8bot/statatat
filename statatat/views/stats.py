@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+
 from pyramid.view import view_config
 import statatat.models as m
 

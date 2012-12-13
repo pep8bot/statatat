@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+
 from pyramid.threadlocal import get_current_request
 from pyramid.events import subscriber
 from pyramid.events import BeforeRender

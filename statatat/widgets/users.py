@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+
 import tw2.core as twc
 import statatat.models
 import pyramid.threadlocal
